@@ -15,35 +15,34 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import com.uxpsystems.assignment.service.MyAppBasicAuthenticationEntryPoint;
 
 @Configuration
-@ComponentScan("com.uxpsystems") 
+@ComponentScan("com.uxpsystems")
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(securedEnabled=true)
+@EnableGlobalMethodSecurity(securedEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-	
 	@Autowired
 	private MyAppBasicAuthenticationEntryPoint myAppBasicAuthenticationEntryPoint;
+
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.csrf().disable().authorizeRequests().antMatchers("/").permitAll().and().authorizeRequests()
-		.antMatchers("/console/**").permitAll()
-		.antMatchers("/user/**").hasAnyRole("ADMIN","USER")
-		.antMatchers("/users/**").hasAnyRole("ADMIN","USER")
-		.and().httpBasic().realmName("MY APP REALM")
-		.authenticationEntryPoint(myAppBasicAuthenticationEntryPoint);
-		
+				.antMatchers("/console/**").permitAll().antMatchers("/user/**").hasAnyRole("ADMIN", "USER")
+				.antMatchers("/users/**").hasAnyRole("ADMIN", "USER").and().httpBasic().realmName("MY APP REALM")
+				.authenticationEntryPoint(myAppBasicAuthenticationEntryPoint);
+
 		http.headers().frameOptions().disable();
-	} 
-	@Bean
-    ServletRegistrationBean h2servletRegistration(){
-        ServletRegistrationBean registrationBean = new ServletRegistrationBean(new WebServlet());
-        registrationBean.addUrlMappings("/console/*");
-        return registrationBean;
-    }
-        @Autowired
-	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        	auth.inMemoryAuthentication()
-			.withUser("user").password("user").roles("USER")
-			.and()
-			.withUser("admin").password("admin").roles("ADMIN");
 	}
-} 
+
+	@Bean
+	ServletRegistrationBean h2servletRegistration() {
+		ServletRegistrationBean registrationBean = new ServletRegistrationBean(new WebServlet());
+		registrationBean.addUrlMappings("/console/*");
+		return registrationBean;
+	}
+
+	@Autowired
+	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+		auth.inMemoryAuthentication().withUser("user").password("user").roles("USER").and().withUser("admin")
+				.password("admin").roles("ADMIN");
+	}
+
+}

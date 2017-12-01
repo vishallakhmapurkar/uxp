@@ -1,73 +1,64 @@
-/*package com.uxpsystems.assignment.test;
+package com.uxpsystems.assignment.test;
 
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
-import org.apache.tomcat.util.codec.binary.Base64;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
+import org.junit.runners.MethodSorters;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.RequestBuilder;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.uxpsystems.assignment.config.Application;
-import com.uxpsystems.assignment.controller.UserController;
+import com.uxpsystems.assignment.dao.IUserDAO;
 import com.uxpsystems.assignment.entity.UserInfo;
-import com.uxpsystems.assignment.service.IUserService;
-@RunWith(SpringRunner.class)
-@WebMvcTest(value = UserController.class, secure = true)
-@ContextConfiguration(classes={Application.class})
+import com.uxpsystems.assignment.service.UserServiceImpl;
 
+
+@RunWith(MockitoJUnitRunner.class)
+@DataJpaTest
 public class UserServiceTest  {
-	String URL = "http://localhost:8080";
-	@Autowired
-	private MockMvc mockMvc;
-	@MockBean
-	private IUserService userService;
 
-	private static HttpHeaders getHeaders() {
-		String credential = "admin:admin";
-		// String credential="tarun:t123";
-		String encodedCredential = new String(Base64.encodeBase64(credential.getBytes()));
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.add("Authorization", "Basic " + encodedCredential);
-		return headers;
+	@Mock
+	private  IUserDAO IUserDAO;
+	@InjectMocks
+	private  UserServiceImpl userService;
+	
+	@Before
+	public void setup(){
+		MockitoAnnotations.initMocks(this);
 	}
+	
 	@Test
-	public void createStudentCourse() throws Exception {
-		UserInfo mockUser = new UserInfo();
-		mockUser.setUserName("Vishal");
-		mockUser.setPassword("Vishal");
-		mockUser.setRole("USER");
-		mockUser.setStatus("ACTIVATED");
-		// studentService.addCourse to respond back with mockCourse
-		Mockito.when(
-				userService.postUser(mockUser)).thenReturn(true);
+	public void saveUser() throws Exception {
+		AuthenticationUtil.configureAuthentication("ROLE_ADMIN");
 
-		// Send course as body to /students/Student1/courses
-		RequestBuilder requestBuilder = MockMvcRequestBuilders
-				.post("/assignment/user/post")
-				.headers(getHeaders());
-
-		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-
-		MockHttpServletResponse response = result.getResponse();
-
-		assertEquals(HttpStatus.CREATED.value(), response.getStatus());
 
 		
+		List<UserInfo> result = userService.getAllUsers();
+		//defualt user admin
+		assertEquals(null, result);
+		
+	}		
+		
 
-	}
 }
-*/

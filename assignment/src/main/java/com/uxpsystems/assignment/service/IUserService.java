@@ -13,7 +13,7 @@ public interface IUserService {
      List<UserInfo> getAllUsers();
 	 @Secured ({"ROLE_ADMIN", "ROLE_USER"})
 	 UserInfo getUserById(Long id);
-	 @Secured ({"ROLE_ADMIN", "ROLE_USER"})
+	 @Secured ({"ROLE_ADMIN"})
 	 UserInfo putUser(UserInfo userInfo);
 	 @Secured ({"ROLE_ADMIN"})
 	 UserInfo postUser(UserInfo userInfo);

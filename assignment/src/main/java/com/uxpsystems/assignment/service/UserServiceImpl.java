@@ -30,6 +30,7 @@ public class UserServiceImpl implements IUserService {
 	    	exsitingUser.setRole(userInfo.getRole());
 	    	exsitingUser.setStatus(userInfo.getStatus());
 	    	res= IUserDAO.save(exsitingUser);
+	    	
 	    }else {
 	    	res= IUserDAO.save(userInfo);
 	    }
@@ -50,8 +51,8 @@ public class UserServiceImpl implements IUserService {
 
 	@Override
 	public UserInfo findUserInfoByUserName(String userName) {
-		
-		return IUserDAO.findUserInfoByUserName(userName);
+		UserInfo user =IUserDAO.findUserInfoByUserName(userName);
+		return user;
 	}
 
 
