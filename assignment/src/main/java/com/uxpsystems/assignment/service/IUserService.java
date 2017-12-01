@@ -9,14 +9,17 @@ import com.uxpsystems.assignment.entity.UserInfo;
 
 
 public interface IUserService {
-	 //@Secured ({"ROLE_ADMIN", "ROLE_USER"})
+	 @Secured ({"ROLE_ADMIN"})
      List<UserInfo> getAllUsers();
-	// @Secured ({"ROLE_ADMIN", "ROLE_USER"})
+	 @Secured ({"ROLE_ADMIN", "ROLE_USER"})
 	 UserInfo getUserById(Long id);
-	// @Secured ({"ROLE_ADMIN"})
-     void putUser(UserInfo userInfo);
-	// @Secured ({"ROLE_ADMIN"})
-	 boolean postUser(UserInfo userInfo);
-	// @Secured ({"ROLE_ADMIN"})
+	 @Secured ({"ROLE_ADMIN", "ROLE_USER"})
+	 UserInfo putUser(UserInfo userInfo);
+	 @Secured ({"ROLE_ADMIN"})
+	 UserInfo postUser(UserInfo userInfo);
+	@Secured ({"ROLE_ADMIN"})
      void deleteUser(Long id);
+	 @Secured ({"ROLE_ADMIN", "ROLE_USER"})
+	UserInfo findUserInfoByUserName(String userName);
+	 UserInfo postDummyUser(UserInfo userInfo);
 }

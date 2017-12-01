@@ -1,13 +1,12 @@
 package com.uxpsystems.assignment.dao;
 
-import java.util.List;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+import org.springframework.stereotype.Repository;
 
 import com.uxpsystems.assignment.entity.UserInfo;
-
-public interface IUserDAO {
-     List<UserInfo> getAllUsers();
-	 UserInfo getUserById(Long id);
-     void putUser(UserInfo userInfo);
-	 void postUser(UserInfo userInfo);
-     void deleteUser(Long id);
+@Repository
+public interface IUserDAO extends CrudRepository<UserInfo, Long> {
+	UserInfo findUserInfoByUserName(String userName);
+   
 }

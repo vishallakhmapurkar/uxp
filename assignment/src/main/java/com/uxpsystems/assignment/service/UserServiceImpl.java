@@ -12,30 +12,53 @@ public class UserServiceImpl implements IUserService {
 	@Autowired
 	private IUserDAO IUserDAO;
 	public List<UserInfo> getAllUsers() {
-		return IUserDAO.getAllUsers();
+		return (List<UserInfo>) IUserDAO.findAll();
 	}
 
 	
 
-	public void putUser(UserInfo userInfo) {
-		IUserDAO.putUser(userInfo);
+	public UserInfo putUser(UserInfo userInfo) {
+		return postUser(userInfo);
 		
 	}
 
-	public boolean postUser(UserInfo userInfo) {
-	
-	    	   IUserDAO.postUser(userInfo);
-	    	   return true;
+	public UserInfo postUser(UserInfo userInfo) {
+		UserInfo res=null;
+		UserInfo exsitingUser = findUserInfoByUserName(userInfo.getUserName());
+	    if(exsitingUser!=null) {
+	    	exsitingUser.setPassword(userInfo.getPassword());
+	    	exsitingUser.setRole(userInfo.getRole());
+	    	exsitingUser.setStatus(userInfo.getStatus());
+	    	res= IUserDAO.save(exsitingUser);
+	    }else {
+	    	res= IUserDAO.save(userInfo);
+	    }
+		return res;
 	}
 
 	public void deleteUser(Long id) {
-		IUserDAO.deleteUser(id);
+		IUserDAO.delete(id);
 
 	}
 
 	public UserInfo getUserById(Long id) {
 	
-		return IUserDAO.getUserById(id);
+		return IUserDAO.findOne(id);
+	}
+
+
+
+	@Override
+	public UserInfo findUserInfoByUserName(String userName) {
+		
+		return IUserDAO.findUserInfoByUserName(userName);
+	}
+
+
+
+	@Override
+	public UserInfo postDummyUser(UserInfo userInfo) {
+		return postUser(userInfo);
 	}
 
 }

@@ -1,5 +1,6 @@
 package com.uxpsystems.assignment.controller;
 
+import java.net.URI;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +15,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.uxpsystems.assignment.entity.UserInfo;
 import com.uxpsystems.assignment.service.IUserService;
 
-@Controller
+@RestController
 public class UserController {
 	@Autowired
 	private IUserService userService;
@@ -28,22 +31,23 @@ public class UserController {
 		UserInfo user = userService.getUserById(id);
 		return new ResponseEntity<UserInfo>(user, HttpStatus.OK);
 	}
-	@GetMapping("/list")
+	@GetMapping("users/list")
 	public ResponseEntity<List<UserInfo>> getAllUsers() {
 		List<UserInfo> list = userService.getAllUsers();
 		return new ResponseEntity<List<UserInfo>>(list, HttpStatus.OK);
 	}
-	@PostMapping("post")
-	public ResponseEntity<Void> post(@RequestBody UserInfo user, UriComponentsBuilder builder) {
-        boolean flag = userService.postUser(user);
-        if (flag == false) {
-        	return new ResponseEntity<Void>(HttpStatus.CONFLICT);
+	@PostMapping("/user/post")
+	public ResponseEntity<Void> post(@RequestBody UserInfo user) {
+		UserInfo userinfo = userService.postUser(user);
+        if (userinfo == null) {
+        	 return ResponseEntity.noContent().build();
         }
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(builder.path("/user/{id}").buildAndExpand(user.getId()).toUri());
-        return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path(
+				"user/{id}").buildAndExpand(userinfo.getId()).toUri();
+        return  ResponseEntity.created(location).build();
+	
 	}
-	@PutMapping("put")
+	@PutMapping("user/put")
 	public ResponseEntity<UserInfo> put(@RequestBody UserInfo user) {
 		userService.putUser(user);
 		
